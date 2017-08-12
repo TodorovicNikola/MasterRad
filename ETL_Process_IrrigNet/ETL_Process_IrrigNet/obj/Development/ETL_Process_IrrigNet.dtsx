@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="ETL_Process_IrrigNet"
   DTS:PackageType="5"
-  DTS:VersionBuild="61"
-  DTS:VersionGUID="{DD755B54-A553-4474-85FF-07B5B45396B5}">
+  DTS:VersionBuild="65"
+  DTS:VersionGUID="{BA04925C-8A6F-4D93-A524-54A970787014}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -448,7 +448,7 @@
       DTS:MaxErrorCount="2"
       DTS:ObjectName="Seed DIM_DATETIME - Script"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 CTP2.1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-      DTS:ThreadHint="0">
+      DTS:ThreadHint="2">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
@@ -460,6 +460,7 @@
       DTS:refId="Package\Seed DIM_DEVICE - DF"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{9B3D4500-901C-4C9C-909D-35228D5FB7A0}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -2952,7 +2953,7 @@ where [refTable].[TIMEZONE_ID] = ?</property>
       DTS:LocaleID="-1"
       DTS:ObjectName="Seed DIM_SOILTYPE - Script"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 CTP2.1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-      DTS:ThreadHint="2">
+      DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
@@ -4929,7 +4930,9 @@ where [refTable].[STATION_ID] = ?</property>
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT MoistureAVG, Moisture_Time, DEVICE_ID, DEPTH
+FROM     aggregated_data
+WHERE  (MoistureAVG &gt; 15) AND (MoistureAVG &lt; 34)</property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."
@@ -4946,7 +4949,7 @@ where [refTable].[STATION_ID] = ?</property>
                   dataType="System.Int32"
                   description="Specifies the mode used to access the database."
                   name="AccessMode"
-                  typeConverter="AccessMode">0</property>
+                  typeConverter="AccessMode">2</property>
                 <property
                   dataType="System.String"
                   description="The mappings between the parameters in the SQL command and variables."
@@ -5693,14 +5696,14 @@ where [refTable].[STATION_ID] = ?</property>
               startId="Package\Seed FACT_MEASUREMENTS - DFT\Merge Join.Outputs[Merge Join Output]" />
             <path
               refId="Package\Seed FACT_MEASUREMENTS - DFT.Paths[OLE DB Source Output]"
-              endId="Package\Seed FACT_MEASUREMENTS - DFT\Lookup SRC_DEVICE.Inputs[Lookup Input]"
-              name="OLE DB Source Output"
-              startId="Package\Seed FACT_MEASUREMENTS - DFT\SRC_AGGREGATED_DATA VIEW.Outputs[OLE DB Source Output]" />
-            <path
-              refId="Package\Seed FACT_MEASUREMENTS - DFT.Paths[OLE DB Source Output1]"
               endId="Package\Seed FACT_MEASUREMENTS - DFT\Sort by Datetime_value.Inputs[Sort Input]"
               name="OLE DB Source Output"
               startId="Package\Seed FACT_MEASUREMENTS - DFT\TRG_DATETIME.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Seed FACT_MEASUREMENTS - DFT.Paths[OLE DB Source Output1]"
+              endId="Package\Seed FACT_MEASUREMENTS - DFT\Lookup SRC_DEVICE.Inputs[Lookup Input]"
+              name="OLE DB Source Output"
+              startId="Package\Seed FACT_MEASUREMENTS - DFT\SRC_AGGREGATED_DATA VIEW.Outputs[OLE DB Source Output]" />
             <path
               refId="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Sort Output]"
               endId="Package\Seed FACT_MEASUREMENTS - DFT\JOIN BY DATETIME.Inputs[Merge Join Left Input]"
@@ -5730,11 +5733,11 @@ where [refTable].[STATION_ID] = ?</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{10E85BEA-E668-4B0D-9082-0953A3BB09EE}"
+      DTS:DTSID="{63216355-C25A-47BB-8A90-B75A2B79E03B}"
       DTS:From="Package\Seed DIM_FIELD - DF"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
-      DTS:To="Package\Seed DIM_DEVICE - DF" />
+      DTS:To="Package\Create Aggregated_data View - Script" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
@@ -5794,8 +5797,8 @@ where [refTable].[STATION_ID] = ?</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 6]"
       DTS:CreationName=""
-      DTS:DTSID="{A74B40ED-DDB5-4E56-B349-0A9B65F5A7A3}"
-      DTS:From="Package\Seed DIM_DEVICE - DF"
+      DTS:DTSID="{B39AE3D4-0F8E-4BE3-9CEF-71396B3B1686}"
+      DTS:From="Package\Seed DIM_CROPTYPE - DF"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 6"
       DTS:To="Package\Create Aggregated_data View - Script" />
@@ -5806,14 +5809,6 @@ where [refTable].[STATION_ID] = ?</property>
       DTS:From="Package\Seed DIM_SOILTYPE - Script"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 7"
-      DTS:To="Package\Create Aggregated_data View - Script" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 8]"
-      DTS:CreationName=""
-      DTS:DTSID="{A9A3BBB1-2327-444D-9D2D-9D2F4F0EC783}"
-      DTS:From="Package\Seed DIM_CROPTYPE - DF"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 8"
       DTS:To="Package\Create Aggregated_data View - Script" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 9]"
@@ -5839,65 +5834,65 @@ where [refTable].[STATION_ID] = ?</property>
         <NodeLayout
           Size="256,41.6"
           Id="Package\Create Aggregated_data View - Script"
-          TopLeft="341.142862952485,403.764711545001" />
+          TopLeft="568.457151625107,403.764711545001" />
         <NodeLayout
           Size="205.6,41.6"
           Id="Package\DELETE ALL ROWS - Script"
-          TopLeft="337.714291465526,25.6941180074092" />
+          TopLeft="565.028580138148,25.6941180074092" />
         <NodeLayout
           Size="204,41.6"
           Id="Package\Seed DIM_CROPTYPE - DF"
-          TopLeft="444.000007561275,264.282356647636" />
+          TopLeft="658.742867448377,264.282356647636" />
         <NodeLayout
           Size="217.6,41.6"
           Id="Package\Seed DIM_DATETIME - Script"
-          TopLeft="642.857153804935,114.635289621848" />
+          TopLeft="945.314300338101,114.635289621848" />
         <NodeLayout
-          Size="189.6,41.6"
+          Size="129.6,41.6"
           Id="Package\Seed DIM_DEVICE - DF"
-          TopLeft="5.71428581159955,208.611767631584" />
+          TopLeft="42.1714283768013,163.952943475849" />
         <NodeLayout
           Size="181.6,41.6"
           Id="Package\Seed DIM_FIELD - DF"
-          TopLeft="68.5714297391929,116.847060462266" />
+          TopLeft="281.028575301657,116.847060462266" />
         <NodeLayout
           Size="251.2,41.6"
           Id="Package\Seed DIM_MOISTUREDEPTH - Script"
-          TopLeft="529.714294735266,191.482355626644" />
+          TopLeft="782.742869560084,189.188237947411" />
         <NodeLayout
           Size="214.4,41.6"
           Id="Package\Seed DIM_SOILTYPE - Script"
-          TopLeft="170.285717185663,264.894121362099" />
+          TopLeft="397.600005858285,264.894121362099" />
         <NodeLayout
           Size="244.8,41.6"
           Id="Package\Seed FACT_MEASUREMENTS - DFT"
-          TopLeft="350.857148832204,492.470595142008" />
+          TopLeft="578.171437504826,492.470595142008" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="159.371429739193,158.447060462266">
+          TopLeft="371.828575301657,158.447060462266">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-58.8571439275934,50.1647071693179"
+              EndConnector="241.961909656783,245.317651082735"
               Start="0,0"
-              End="-58.8571439275934,42.6647071693179">
+              End="241.961909656783,237.817651082735">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,21.082353584659" />
+                    End="0,216.922356470365" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,21.082353584659"
-                    Point2="0,25.082353584659"
-                    Point3="-4,25.082353584659" />
+                    Point1="0,216.922356470365"
+                    Point2="0,220.922356470365"
+                    Point3="4,220.922356470365" />
                   <mssgle:LineSegment
-                    End="-54.8571439275934,25.082353584659" />
+                    End="237.961909656783,220.922356470365" />
                   <mssgle:CubicBezierSegment
-                    Point1="-54.8571439275934,25.082353584659"
-                    Point2="-58.8571439275934,25.082353584659"
-                    Point3="-58.8571439275934,29.082353584659" />
+                    Point1="237.961909656783,220.922356470365"
+                    Point2="241.961909656783,220.922356470365"
+                    Point3="241.961909656783,224.922356470365" />
                   <mssgle:LineSegment
-                    End="-58.8571439275934,42.6647071693179" />
+                    End="241.961909656783,237.817651082735" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -5908,30 +5903,30 @@ where [refTable].[STATION_ID] = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="374.64762479886,67.2941180074092">
+          TopLeft="601.961913471481,67.2941180074092">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-215.276195059667,49.5529424548564"
+              EndConnector="-230.133338169824,49.5529424548568"
               Start="0,0"
-              End="-215.276195059667,42.0529424548564">
+              End="-230.133338169824,42.0529424548568">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,9.09748574427026" />
+                    End="0,9.09748574427036" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,9.09748574427026"
-                    Point2="0,13.0974857442703"
-                    Point3="-4,13.0974857442703" />
+                    Point1="0,9.09748574427036"
+                    Point2="0,13.0974857442704"
+                    Point3="-4,13.0974857442704" />
                   <mssgle:LineSegment
-                    End="-211.276195059667,13.0974857442703" />
+                    End="-226.133338169824,13.0974857442704" />
                   <mssgle:CubicBezierSegment
-                    Point1="-211.276195059667,13.0974857442703"
-                    Point2="-215.276195059667,13.0974857442703"
-                    Point3="-215.276195059667,17.0974857442703" />
+                    Point1="-226.133338169824,13.0974857442704"
+                    Point2="-230.133338169824,13.0974857442704"
+                    Point3="-230.133338169824,17.0974857442704" />
                   <mssgle:LineSegment
-                    End="-215.276195059667,42.0529424548564" />
+                    End="-230.133338169824,42.0529424548568" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -5942,30 +5937,30 @@ where [refTable].[STATION_ID] = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 10]"
-          TopLeft="751.657153804935,156.235289621848">
+          TopLeft="1054.1143003381,156.235289621848">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-199.847624185783,247.529421923153"
+              EndConnector="-274.990482046328,247.529421923153"
               Start="0,0"
-              End="-199.847624185783,240.029421923153">
+              End="-274.990482046328,240.029421923153">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,178.790957727867" />
+                    End="0,211.673311130206" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,178.790957727867"
-                    Point2="0,182.790957727867"
-                    Point3="-4,182.790957727867" />
+                    Point1="0,211.673311130206"
+                    Point2="0,215.673311130206"
+                    Point3="-4,215.673311130206" />
                   <mssgle:LineSegment
-                    End="-195.847624185783,182.790957727867" />
+                    End="-270.990482046328,215.673311130206" />
                   <mssgle:CubicBezierSegment
-                    Point1="-195.847624185783,182.790957727867"
-                    Point2="-199.847624185783,182.790957727867"
-                    Point3="-199.847624185783,186.790957727867" />
+                    Point1="-270.990482046328,215.673311130206"
+                    Point2="-274.990482046328,215.673311130206"
+                    Point3="-274.990482046328,219.673311130206" />
                   <mssgle:LineSegment
-                    End="-199.847624185783,240.029421923153" />
+                    End="-274.990482046328,240.029421923153" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -5976,7 +5971,7 @@ where [refTable].[STATION_ID] = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 11]"
-          TopLeft="471.200005892345,445.364711545001">
+          TopLeft="698.514294564965,445.364711545001">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -5998,7 +5993,7 @@ where [refTable].[STATION_ID] = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="400.152386577114,67.2941180074092">
+          TopLeft="627.466675249735,67.2941180074092">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -6032,30 +6027,30 @@ where [refTable].[STATION_ID] = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="506.380958132193,67.2941180074092">
+          TopLeft="733.695246804815,67.2941180074092">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="245.276195672742,47.3411716144388"
+              EndConnector="320.419053533287,47.3411716144388"
               Start="0,0"
-              End="245.276195672742,39.8411716144388">
+              End="320.419053533287,39.8411716144388">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,8.51288600877821" />
+                    End="0,8.51288600877819" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,8.51288600877821"
+                    Point1="0,8.51288600877819"
                     Point2="0,12.5128860087782"
                     Point3="4,12.5128860087782" />
                   <mssgle:LineSegment
-                    End="241.276195672742,12.5128860087782" />
+                    End="316.419053533287,12.5128860087782" />
                   <mssgle:CubicBezierSegment
-                    Point1="241.276195672742,12.5128860087782"
-                    Point2="245.276195672742,12.5128860087782"
-                    Point3="245.276195672742,16.5128860087782" />
+                    Point1="316.419053533287,12.5128860087782"
+                    Point2="320.419053533287,12.5128860087782"
+                    Point3="320.419053533287,16.5128860087782" />
                   <mssgle:LineSegment
-                    End="245.276195672742,39.8411716144388" />
+                    End="320.419053533287,39.8411716144388" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6066,30 +6061,30 @@ where [refTable].[STATION_ID] = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="473.44762479886,67.2941180074092">
+          TopLeft="700.761913471481,67.2941180074092">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="163.009526758128,124.188237619235"
+              EndConnector="207.580956088603,121.894119940002"
               Start="0,0"
-              End="163.009526758128,116.688237619235">
+              End="207.580956088603,114.394119940002">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,46.2506845656209" />
+                    End="0,45.3224083772671" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,46.2506845656209"
-                    Point2="0,50.2506845656209"
-                    Point3="4,50.2506845656209" />
+                    Point1="0,45.3224083772671"
+                    Point2="0,49.3224083772671"
+                    Point3="4,49.3224083772671" />
                   <mssgle:LineSegment
-                    End="159.009526758128,50.2506845656209" />
+                    End="203.580956088603,49.3224083772671" />
                   <mssgle:CubicBezierSegment
-                    Point1="159.009526758128,50.2506845656209"
-                    Point2="163.009526758128,50.2506845656209"
-                    Point3="163.009526758128,54.2506845656209" />
+                    Point1="203.580956088603,49.3224083772671"
+                    Point2="207.580956088603,49.3224083772671"
+                    Point3="207.580956088603,53.3224083772671" />
                   <mssgle:LineSegment
-                    End="163.009526758128,116.688237619235" />
+                    End="207.580956088603,114.394119940002" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6100,30 +6095,30 @@ where [refTable].[STATION_ID] = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
-          TopLeft="440.514291465526,67.2941180074092">
+          TopLeft="667.828580138148,67.2941180074092">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="83.2000014305111,196.988238640227"
+              EndConnector="92.9142873102289,196.988238640227"
               Start="0,0"
-              End="83.2000014305111,189.488238640227">
+              End="92.9142873102289,189.488238640227">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,74.9176484573256" />
+                    End="0,94.4941193201134" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,74.9176484573256"
-                    Point2="0,78.9176484573256"
-                    Point3="4,78.9176484573256" />
+                    Point1="0,94.4941193201134"
+                    Point2="0,98.4941193201134"
+                    Point3="4,98.4941193201134" />
                   <mssgle:LineSegment
-                    End="79.2000014305111,78.9176484573256" />
+                    End="88.9142873102289,98.4941193201134" />
                   <mssgle:CubicBezierSegment
-                    Point1="79.2000014305111,78.9176484573256"
-                    Point2="83.2000014305111,78.9176484573256"
-                    Point3="83.2000014305111,82.9176484573256" />
+                    Point1="88.9142873102289,98.4941193201134"
+                    Point2="92.9142873102289,98.4941193201134"
+                    Point3="92.9142873102289,102.494119320113" />
                   <mssgle:LineSegment
-                    End="83.2000014305111,189.488238640227" />
+                    End="92.9142873102289,189.488238640227" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6134,30 +6129,30 @@ where [refTable].[STATION_ID] = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6]"
-          TopLeft="100.5142858116,250.211767631584">
+          TopLeft="760.742867448377,305.882356647636">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="285.961910474219,153.552943913417"
+              EndConnector="-64.28571582327,97.882354897365"
               Start="0,0"
-              End="285.961910474219,146.052943913417">
+              End="-64.28571582327,90.382354897365">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,109.3929431976" />
+                    End="0,44.9411774486825" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,109.3929431976"
-                    Point2="0,113.3929431976"
-                    Point3="4,113.3929431976" />
+                    Point1="0,44.9411774486825"
+                    Point2="0,48.9411774486825"
+                    Point3="-4,48.9411774486825" />
                   <mssgle:LineSegment
-                    End="281.961910474219,113.3929431976" />
+                    End="-60.28571582327,48.9411774486825" />
                   <mssgle:CubicBezierSegment
-                    Point1="281.961910474219,113.3929431976"
-                    Point2="285.961910474219,113.3929431976"
-                    Point3="285.961910474219,117.3929431976" />
+                    Point1="-60.28571582327,48.9411774486825"
+                    Point2="-64.28571582327,48.9411774486825"
+                    Point3="-64.28571582327,52.9411774486825" />
                   <mssgle:LineSegment
-                    End="285.961910474219,146.052943913417" />
+                    End="-64.28571582327,90.382354897365" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6168,7 +6163,7 @@ where [refTable].[STATION_ID] = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 7]"
-          TopLeft="277.485717185663,306.494121362099">
+          TopLeft="504.800005858285,306.494121362099">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -6201,65 +6196,31 @@ where [refTable].[STATION_ID] = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 8]"
-          TopLeft="546.000007561275,305.882356647636">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-76.85714460879,97.882354897365"
-              Start="0,0"
-              End="-76.85714460879,90.382354897365">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,44.9411774486825" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,44.9411774486825"
-                    Point2="0,48.9411774486825"
-                    Point3="-4,48.9411774486825" />
-                  <mssgle:LineSegment
-                    End="-72.85714460879,48.9411774486825" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-72.85714460879,48.9411774486825"
-                    Point2="-76.85714460879,48.9411774486825"
-                    Point3="-76.85714460879,52.9411774486825" />
-                  <mssgle:LineSegment
-                    End="-76.85714460879,90.382354897365" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 9]"
-          TopLeft="655.314294735266,233.082355626644">
+          TopLeft="908.342869560084,230.788237947411">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-144.838098449448,170.682355918357"
+              EndConnector="-170.552384601644,172.97647359759"
               Start="0,0"
-              End="-144.838098449448,163.182355918357">
+              End="-170.552384601644,165.47647359759">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,97.7733302370327" />
+                    End="0,125.905957595411" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,97.7733302370327"
-                    Point2="0,101.773330237033"
-                    Point3="-4,101.773330237033" />
+                    Point1="0,125.905957595411"
+                    Point2="0,129.905957595411"
+                    Point3="-4,129.905957595411" />
                   <mssgle:LineSegment
-                    End="-140.838098449448,101.773330237033" />
+                    End="-166.552384601644,129.905957595411" />
                   <mssgle:CubicBezierSegment
-                    Point1="-140.838098449448,101.773330237033"
-                    Point2="-144.838098449448,101.773330237033"
-                    Point3="-144.838098449448,105.773330237033" />
+                    Point1="-166.552384601644,129.905957595411"
+                    Point2="-170.552384601644,129.905957595411"
+                    Point3="-170.552384601644,133.905957595411" />
                   <mssgle:LineSegment
-                    End="-144.838098449448,163.182355918357" />
+                    End="-170.552384601644,165.47647359759" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6883,247 +6844,91 @@ where [refTable].[STATION_ID] = ?</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="230.4,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\SRC_AGGREGATED_DATA VIEW"
-          TopLeft="181.6,69.6" />
-        <NodeLayout
-          Size="204,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\Sort by Moisture_Datetime"
-          TopLeft="196,380.8" />
-        <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\JOIN BY DATETIME"
-          TopLeft="208.8,475.2" />
-        <NodeLayout
-          Size="168.8,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\Lookup SRC_FIELD"
-          TopLeft="216.8,285.6" />
-        <NodeLayout
-          Size="214.4,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\TRG_FACT_MEASUREMENTS"
-          TopLeft="180,1031.2" />
-        <NodeLayout
-          Size="188.8,43.2"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\Sort by Datetime_value"
-          TopLeft="476.8,479.2" />
+          Size="176.8,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\Lookup SRC_DEVICE"
+          TopLeft="208,205.176471008644" />
         <NodeLayout
           Size="154.4,41.6"
           Id="Package\Seed FACT_MEASUREMENTS - DFT\TRG_DATETIME"
-          TopLeft="523.2,372.8" />
+          TopLeft="523.2,406.776471008644" />
         <NodeLayout
-          Size="252,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\Add constant value for SOILTYPE_ID"
-          TopLeft="172.8,577.6" />
-        <NodeLayout
-          Size="176.8,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\Lookup SRC_DEVICE"
-          TopLeft="208,171.2" />
-        <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Sort Output1]"
-          TopLeft="476.8,498.4">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-96.8000000000001,0"
-              Start="0,0"
-              End="-89.3000000000001,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="-89.3000000000001,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Sort Output]"
-          TopLeft="296.2,422.4">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.8"
-              Start="0,0"
-              End="0,45.3">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,45.3" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[OLE DB Source Output1]"
-          TopLeft="571.4,414.4">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,64.8000000000001"
-              Start="0,0"
-              End="0,57.3000000000001">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,57.3000000000001" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[OLE DB Source Output]"
-          TopLeft="296.6,111.2">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Merge Join Output]"
-          TopLeft="296.6,516.8">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60.8000000000001"
-              Start="0,0"
-              End="0,53.3000000000001">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,53.3000000000001" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Lookup Match Output1]"
-          TopLeft="299.6,327.2">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,53.6000000000001"
-              Start="0,0"
-              End="0,46.1000000000001">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,46.1000000000001" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,17.2453125000001,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Lookup Match Output]"
-          TopLeft="298.8,212.8">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,72.8"
-              Start="0,0"
-              End="0,65.3">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,65.3" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,26.8453125,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="287.2,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\UnifiedFieldAndTempAggregated File Source"
-          TopLeft="539.2,580" />
-        <NodeLayout
-          Size="97.6,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\Sort"
-          TopLeft="640.8,694.4" />
-        <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Flat File Source Output]"
-          TopLeft="686.2,621.6">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,72.8000000000002"
-              Start="0,0"
-              End="0,65.3000000000002">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,65.3000000000002" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          Size="188.8,43.2"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\Sort by Datetime_value"
+          TopLeft="476.8,513.176471008644" />
         <NodeLayout
           Size="106.4,41.6"
           Id="Package\Seed FACT_MEASUREMENTS - DFT\Sort 1"
-          TopLeft="243.2,659.2" />
+          TopLeft="243.2,693.176471008644" />
+        <NodeLayout
+          Size="287.2,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\UnifiedFieldAndTempAggregated File Source"
+          TopLeft="539.2,613.976471008644" />
+        <NodeLayout
+          Size="168.8,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\Lookup SRC_FIELD"
+          TopLeft="216.8,319.576471008644" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\JOIN BY DATETIME"
+          TopLeft="208.8,509.176471008644" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\Merge Join"
+          TopLeft="221.6,788.376471008644" />
+        <NodeLayout
+          Size="112.8,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\Lookup"
+          TopLeft="236.8,970.776471008644" />
+        <NodeLayout
+          Size="97.6,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\Sort"
+          TopLeft="640.8,728.376471008644" />
+        <NodeLayout
+          Size="230.4,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\SRC_AGGREGATED_DATA VIEW"
+          TopLeft="183.31428574348,75.7176471446212" />
+        <NodeLayout
+          Size="155.2,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\Data Conversion"
+          TopLeft="212,879.576471008644" />
+        <NodeLayout
+          Size="204,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\Sort by Moisture_Datetime"
+          TopLeft="196,414.776471008644" />
+        <NodeLayout
+          Size="252,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\Add constant value for SOILTYPE_ID"
+          TopLeft="172.8,611.576471008644" />
+        <NodeLayout
+          Size="214.4,41.6"
+          Id="Package\Seed FACT_MEASUREMENTS - DFT\TRG_FACT_MEASUREMENTS"
+          TopLeft="180,1065.17647100864" />
         <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Derived Column Output]"
-          TopLeft="297.6,619.2">
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Sort Output3]"
+          TopLeft="640.8,749.176471008644">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,39.9999999999999"
+              EndConnector="-289.6,60"
               Start="0,0"
-              End="0,32.4999999999999">
+              End="-282.1,60">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,32.4999999999999" />
+                    End="-140.8,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-140.8,0"
+                    Point2="-144.8,0"
+                    Point3="-144.8,4" />
+                  <mssgle:LineSegment
+                    End="-144.8,56" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-144.8,56"
+                    Point2="-144.8,60"
+                    Point3="-148.8,60" />
+                  <mssgle:LineSegment
+                    End="-282.1,60" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7132,13 +6937,9 @@ where [refTable].[STATION_ID] = ?</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="129.6,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\Merge Join"
-          TopLeft="221.6,754.4" />
         <EdgeLayout
           Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Sort Output2]"
-          TopLeft="296.4,700.8">
+          TopLeft="296.4,734.776471008644">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7171,31 +6972,19 @@ where [refTable].[STATION_ID] = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Sort Output3]"
-          TopLeft="640.8,715.2">
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Sort Output1]"
+          TopLeft="476.8,532.376471008644">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-289.6,60"
+              EndConnector="-96.8000000000001,0"
               Start="0,0"
-              End="-282.1,60">
+              End="-89.3000000000001,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-140.8,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-140.8,0"
-                    Point2="-144.8,0"
-                    Point3="-144.8,4" />
-                  <mssgle:LineSegment
-                    End="-144.8,56" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-144.8,56"
-                    Point2="-144.8,60"
-                    Point3="-148.8,60" />
-                  <mssgle:LineSegment
-                    End="-282.1,60" />
+                    End="-89.3000000000001,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7204,13 +6993,53 @@ where [refTable].[STATION_ID] = ?</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="155.2,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\Data Conversion"
-          TopLeft="212,845.6" />
+        <EdgeLayout
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Sort Output]"
+          TopLeft="296.2,456.376471008644">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.8"
+              Start="0,0"
+              End="0,45.3">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.3" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[OLE DB Source Output]"
+          TopLeft="571.4,448.376471008644">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,64.8000000000001"
+              Start="0,0"
+              End="0,57.3000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,57.3000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Merge Join Output1]"
-          TopLeft="288,796">
+          TopLeft="288,829.976471008644">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7230,24 +7059,20 @@ where [refTable].[STATION_ID] = ?</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="112.8,41.6"
-          Id="Package\Seed FACT_MEASUREMENTS - DFT\Lookup"
-          TopLeft="236.8,936.8" />
         <EdgeLayout
-          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Data Conversion Output]"
-          TopLeft="291.4,887.2">
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Merge Join Output]"
+          TopLeft="296.6,550.776471008644">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,49.5999999999999"
+              EndConnector="0,60.8000000000001"
               Start="0,0"
-              End="0,42.0999999999999">
+              End="0,53.3000000000001">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,42.0999999999999" />
+                    End="0,53.3000000000001" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7258,7 +7083,7 @@ where [refTable].[STATION_ID] = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Lookup Match Output2]"
-          TopLeft="290.2,978.4">
+          TopLeft="290.2,1012.37647100864">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7280,71 +7105,145 @@ where [refTable].[STATION_ID] = ?</property>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Lookup Match Output1]"
+          TopLeft="299.6,361.176471008644">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53.6000000000001"
+              Start="0,0"
+              End="0,46.1000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,46.1000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,17.2453125000001,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Lookup Match Output]"
+          TopLeft="298.8,246.776471008644">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,72.8"
+              Start="0,0"
+              End="0,65.3">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,65.3" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,26.8453125,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Flat File Source Output]"
+          TopLeft="686.2,655.576471008644">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,72.8000000000002"
+              Start="0,0"
+              End="0,65.3000000000002">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,65.3000000000002" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Derived Column Output]"
+          TopLeft="297.6,653.176471008644">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.9999999999999"
+              Start="0,0"
+              End="0,32.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[Data Conversion Output]"
+          TopLeft="291.4,921.176471008644">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49.5999999999999"
+              Start="0,0"
+              End="0,42.0999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.0999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Seed FACT_MEASUREMENTS - DFT.Paths[OLE DB Source Output1]"
+          TopLeft="297.45714287174,117.317647144621">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,87.8588238640227"
+              Start="0,0"
+              End="0,80.3588238640227">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,80.3588238640227" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Seed FACT_MEASUREMENTS - DFT\SRC_AGGREGATED_DATA VIEW">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">View</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Seed FACT_MEASUREMENTS - DFT\Lookup SRC_FIELD">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:boolean">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string">[dbo].[FIELD]</Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:int">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Seed FACT_MEASUREMENTS - DFT\TRG_FACT_MEASUREMENTS">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Seed FACT_MEASUREMENTS - DFT\TRG_DATETIME">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\Seed FACT_MEASUREMENTS - DFT\Lookup SRC_DEVICE">
     <Properties>
@@ -7369,12 +7268,48 @@ where [refTable].[STATION_ID] = ?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
+    design-time-name="Package\Seed FACT_MEASUREMENTS - DFT\TRG_DATETIME">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Seed FACT_MEASUREMENTS - DFT\Lookup SRC_FIELD">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string">[dbo].[FIELD]</Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
     design-time-name="Package\Seed FACT_MEASUREMENTS - DFT\Lookup">
     <Properties>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -7384,10 +7319,36 @@ where [refTable].[STATION_ID] = ?</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:int">0</Value>
+          type="q4:string">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Seed FACT_MEASUREMENTS - DFT\SRC_AGGREGATED_DATA VIEW">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">View</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Seed FACT_MEASUREMENTS - DFT\TRG_FACT_MEASUREMENTS">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
